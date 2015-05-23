@@ -6,18 +6,13 @@ public class FancyButton : MonoBehaviour
 {
     public Action Action;
 
-    private Vector3 size;
-
-    public void Start()
-    {
-        size = Vector3.one;
-    }
+    private Vector3 size = Vector3.one;
 
     public void Update()
     {
         var dir = size - transform.localScale;
         if(dir.magnitude > 1)dir.Normalize();
-        transform.localScale = transform.localScale - dir;
+        transform.localScale = transform.localScale + dir/3;
     }
 
     public void Press()

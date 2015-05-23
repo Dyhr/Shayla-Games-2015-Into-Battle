@@ -40,28 +40,29 @@ public class Gun : MonoBehaviour
                     }
                 }
             }
+        }
+        if (target != null && timer <= 0)
+        {
+            timer = 1/FireRate;
+
+            var t = transform.position;
+            var dir = (target.position - t).normalized;
+            dir = Vector3.RotateTowards(dir, Random.onUnitSphere, Accuracy*Random.value, 1000).normalized;
+            Debug.DrawLine(transform.position, transform.position + dir*1000);
+
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, dir, out hit) && hit.transform.CompareTag("Soldier"))
+            {
+                if (hit.transform.GetComponent<Soldier>().Hit())
+                {
+                    soldiers.Remove(hit.transform);
+                    if (target == hit.transform)
+                        target = null;
+                }
+            }
             else
             {
-                if (timer <= 0)
-                {
-                    timer = 1/FireRate;
-
-                    var t = transform.position;
-                    var dir = (target.position - t).normalized;
-                    dir = Vector3.RotateTowards(dir, Random.onUnitSphere, Accuracy * Random.value, 1000).normalized ;
-                    Debug.DrawLine(transform.position, transform.position+dir*1000);
-
-                    RaycastHit hit;
-                    if (Physics.Raycast(transform.position, dir, out hit) && hit.transform.CompareTag("Soldier"))
-                    {
-                        if (hit.transform.GetComponent<Soldier>().Hit())
-                        {
-                            soldiers.Remove(hit.transform);
-                            if(target == hit.transform)
-                                target = null;
-                        }
-                    }
-                }
+                target = null;
             }
         }
     }

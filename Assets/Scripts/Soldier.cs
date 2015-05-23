@@ -9,6 +9,8 @@ public class Soldier : MonoBehaviour
     public uint HP = 4;
     private Rigidbody _body;
 
+    public bool Ready;
+
     public void Start()
     {
         _body = GetComponent<Rigidbody>();
@@ -20,7 +22,9 @@ public class Soldier : MonoBehaviour
 
     public void Update()
     {
-        _body.AddForce(0, 0, Speed - _body.velocity.z, ForceMode.Force);
+        if (Ready) { 
+            _body.AddForce(0, 0, Speed - _body.velocity.z, ForceMode.Force);
+        }
     }
 
     public bool Hit()

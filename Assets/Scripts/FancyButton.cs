@@ -22,4 +22,9 @@ public class FancyButton : MonoBehaviour
             Action();
         }
     }
+
+    public void OnClick()
+    {
+        Press();
+    }
 }

@@ -1,0 +1,1 @@
+"C:\Development\Android SDK\platform-tools\adb.exe" install -r ".\build.apk"

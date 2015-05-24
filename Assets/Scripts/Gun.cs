@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(AudioSource))]
 public class Gun : MonoBehaviour
 {
     public float FireRate;
@@ -12,11 +13,13 @@ public class Gun : MonoBehaviour
     public static List<Transform> soldiers;
     private float timer;
     private float watch_timer;
+    private AudioSource source;
 
     public void Start()
     {
         timer = 0;
         watch_timer = Random.value;
+        source = GetComponent<AudioSource>();
     }
 
     public void Update()
@@ -43,6 +46,7 @@ public class Gun : MonoBehaviour
         }
         if (target != null && timer <= 0)
         {
+            if(!source.isPlaying)source.Play();
             timer = 1/FireRate;
 
             var t = transform.position;
@@ -65,6 +69,7 @@ public class Gun : MonoBehaviour
                 target = null;
             }
         }
+        if(target == null && source.isPlaying)source.Stop();
     }
 
     public void OnDrawGizmos()

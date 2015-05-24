@@ -59,11 +59,11 @@ public class Boat : MonoBehaviour
             for (int i = 0; i < transform.childCount; ++i)
             {
                 var t = transform.GetChild(i);
-                if (t.GetComponent<Soldier>() != null) soldiers.Add(t);
+                if (t.CompareTag("Soldier")) soldiers.Add(t);
             }
             foreach (var soldier in soldiers)
             {
-                soldier.GetComponent<Soldier>().Ready = true;
+                if(soldier.GetComponent<Soldier>()!=null)soldier.GetComponent<Soldier>().Ready = true;
                 soldier.parent = transform.parent;
             }
             _stopped = true;

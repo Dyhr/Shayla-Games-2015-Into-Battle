@@ -6,9 +6,11 @@ public class Disable : MonoBehaviour
     public float Timer;
     private float _timer;
 
-    public void Awake()
+    public void OnEnable()
     {
         _timer = Timer;
+        GetComponent<AudioSource>().Play();
+        GetComponent<ParticleSystem>().Play();
     }
     public void Update()
     {

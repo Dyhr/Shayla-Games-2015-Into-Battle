@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour
     private float watch_timer;
     private AudioSource source;
     private uint misses;
+    private static bool playing;
 
     public void Start()
     {
@@ -37,7 +38,7 @@ public class Gun : MonoBehaviour
                 soldiers = soldiers.OrderBy(x => x.position.z).ToList();
                 foreach (var soldier in soldiers)
                 {
-                    if (soldier == null || Mathf.Abs(soldier.position.x-transform.position.x) > 64 || Random.value < 0.1) continue;
+                    if (soldier == null || Mathf.Abs(soldier.position.x-transform.position.x) > 64 || Random.value < 0.3) continue;
                     RaycastHit hit;
                     if (Physics.Raycast(transform.position, (soldier.position - transform.position).normalized, out hit) &&
                         hit.transform == soldier)
@@ -49,7 +50,11 @@ public class Gun : MonoBehaviour
         }
         if (target != null && timer <= 0)
         {
-            if (!source.isPlaying) source.Play();
+            if (!source.isPlaying && !playing)
+            {
+                playing = true;
+                source.Play();
+            }
             timer = 1/FireRate;
 
             var t = transform.position;
@@ -73,7 +78,7 @@ public class Gun : MonoBehaviour
                 }
                 else if (hit.transform.GetComponent<OVRPlayerController>() != null && Random.value < 0.2)
                 {
-                    soldiers.Remove(hit.transform);
+                    if(soldiers.Contains(hit.transform))soldiers.Remove(hit.transform);
                     //Destroy(hit.transform.gameObject);
                     hit.transform.GetComponentInChildren<OVRCameraRig>().leftEyeCamera.clearFlags = CameraClearFlags.SolidColor;
                     hit.transform.GetComponentInChildren<OVRCameraRig>().leftEyeCamera.backgroundColor = Color.black;
@@ -96,7 +101,11 @@ public class Gun : MonoBehaviour
             Line.SetPosition(1,transform.position);
         }
 
-        if(target == null && source.isPlaying)source.Stop();
+        if (target == null && source.isPlaying && playing)
+        {
+            source.Stop();
+            playing = false;
+        }
     }
 
     public void OnDrawGizmos()

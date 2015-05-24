@@ -55,7 +55,7 @@ public class Boat : MonoBehaviour
         if (other.CompareTag("Beach") && !_stopped) { 
             Destroy(Door.gameObject);
             ((Boat)Instantiate(Prefab, new Vector3(transform.position.x,oriY,transform.position.z) - Vector3.forward*256, Quaternion.Euler(0,0,90))).Ready = true;
-
+            Timer.instance.StartTimer();
             var soldiers = new List<Transform>();
             for (int i = 0; i < transform.childCount; ++i)
             {

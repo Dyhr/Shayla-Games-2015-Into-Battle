@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
         if (StepSource.isPlaying && OVRPlayerController.move == Vector3.zero) StepSource.Stop();
         if (!StepSource.isPlaying && OVRPlayerController.move != Vector3.zero) StepSource.Play();
         RaycastHit hit;
-        if (Input.GetButton("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             if (Physics.Raycast(cam.position, cam.forward, out hit, 100/*, 1 << LayerMask.NameToLayer("Buttons")*/))
             {

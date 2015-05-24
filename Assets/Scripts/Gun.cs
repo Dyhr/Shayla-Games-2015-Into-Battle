@@ -8,18 +8,21 @@ public class Gun : MonoBehaviour
 {
     public float FireRate;
     public float Accuracy;
+    public LineRenderer Line;
 
     private Transform target;
     public static List<Transform> soldiers;
     private float timer;
     private float watch_timer;
     private AudioSource source;
+    private uint misses;
 
     public void Start()
     {
         timer = 0;
         watch_timer = Random.value;
         source = GetComponent<AudioSource>();
+        Line.SetPosition(0, transform.position);
     }
 
     public void Update()
@@ -46,29 +49,45 @@ public class Gun : MonoBehaviour
         }
         if (target != null && timer <= 0)
         {
-            if(!source.isPlaying)source.Play();
+            if (!source.isPlaying) source.Play();
             timer = 1/FireRate;
 
             var t = transform.position;
             var dir = (target.position - t).normalized;
             dir = Vector3.RotateTowards(dir, Random.onUnitSphere, Accuracy*Random.value, 1000).normalized;
-            Debug.DrawLine(transform.position, transform.position + dir*1000);
+            //Debug.DrawLine(transform.position, transform.position + dir*1000);
 
             RaycastHit hit;
             if (Physics.Raycast(transform.position, dir, out hit) && hit.transform.CompareTag("Soldier"))
             {
-                if (hit.transform.GetComponent<Soldier>().Hit())
+                Line.SetPosition(1, hit.point);
+                misses = 0;
+                if (hit.transform.GetComponent<Soldier>() != null) { 
+                    if (hit.transform.GetComponent<Soldier>().Hit())
+                    {
+                        soldiers.Remove(hit.transform);
+                        if (target == hit.transform)
+                            target = null;
+                    }
+                }
+                else if (hit.transform.GetComponent<OVRPlayerController>() != null && Random.value < 0.2)
                 {
                     soldiers.Remove(hit.transform);
-                    if (target == hit.transform)
-                        target = null;
+                    Destroy(hit.transform.gameObject);
                 }
             }
             else
             {
-                target = null;
+                Line.SetPosition(1, hit.point);
+                misses++;
+                if (misses == 4) target = null;
             }
         }
+        else
+        {
+            Line.SetPosition(1,transform.position);
+        }
+
         if(target == null && source.isPlaying)source.Stop();
     }
 

@@ -12,7 +12,7 @@ public class Boat : MonoBehaviour
 
     private Rigidbody _body;
     private bool _stopped;
-    private float _time = 5;
+    private float _time = 8;
     private float oriY;
 
     private bool _ready;
@@ -37,7 +37,8 @@ public class Boat : MonoBehaviour
         if (!Ready) return;
         if (!_stopped)
         {
-            _body.AddForce(0, 0, Speed - _body.velocity.z, ForceMode.VelocityChange);
+            //_body.AddForce(0, 0, Speed - _body.velocity.z, ForceMode.VelocityChange);
+            transform.position += Vector3.forward*Speed*Time.deltaTime;
         }
         else
         {
@@ -53,7 +54,7 @@ public class Boat : MonoBehaviour
     {
         if (other.CompareTag("Beach") && !_stopped) { 
             Destroy(Door.gameObject);
-            ((Boat)Instantiate(Prefab, new Vector3(transform.position.x,oriY,transform.position.z) - Vector3.forward*128, Quaternion.Euler(0,0,90))).Ready = true;
+            ((Boat)Instantiate(Prefab, new Vector3(transform.position.x,oriY,transform.position.z) - Vector3.forward*256, Quaternion.Euler(0,0,90))).Ready = true;
 
             var soldiers = new List<Transform>();
             for (int i = 0; i < transform.childCount; ++i)

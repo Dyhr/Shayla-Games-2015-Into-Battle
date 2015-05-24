@@ -78,6 +78,8 @@ public class OVRPlayerController : MonoBehaviour
 	/// </summary>
 	public bool useProfileData = true;
 
+    public static Vector3 move;
+
 	protected CharacterController Controller = null;
 	protected OVRCameraRig CameraRig = null;
 
@@ -100,6 +102,8 @@ public class OVRPlayerController : MonoBehaviour
 		var p = CameraRig.transform.localPosition;
 		p.z = OVRManager.profile.eyeDepth;
 		CameraRig.transform.localPosition = p;
+        SetSkipMouseRotation(true);
+	    move = Vector3.zero;
 	}
 
 	void Awake()
@@ -182,6 +186,7 @@ public class OVRPlayerController : MonoBehaviour
 		MoveThrottle.z /= motorDamp;
 
 		moveDirection += MoveThrottle * SimulationRate * Time.deltaTime;
+	    moveDirection += move*Time.deltaTime*SimulationRate;
 
 		// Gravity
 		if (Controller.isGrounded && FallSpeed <= 0)

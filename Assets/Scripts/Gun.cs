@@ -37,7 +37,7 @@ public class Gun : MonoBehaviour
                 soldiers = soldiers.OrderBy(x => x.position.z).ToList();
                 foreach (var soldier in soldiers)
                 {
-                    if (soldier == null || Mathf.Abs(soldier.position.x-transform.position.x) > 64) continue;
+                    if (soldier == null || Mathf.Abs(soldier.position.x-transform.position.x) > 64 || Random.value < 0.1) continue;
                     RaycastHit hit;
                     if (Physics.Raycast(transform.position, (soldier.position - transform.position).normalized, out hit) &&
                         hit.transform == soldier)
@@ -61,6 +61,7 @@ public class Gun : MonoBehaviour
             if (Physics.Raycast(transform.position, dir, out hit) && hit.transform.CompareTag("Soldier"))
             {
                 Line.SetPosition(1, hit.point);
+                HitPool.instance.Poll(hit.point);
                 misses = 0;
                 if (hit.transform.GetComponent<Soldier>() != null) { 
                     if (hit.transform.GetComponent<Soldier>().Hit())
@@ -73,12 +74,19 @@ public class Gun : MonoBehaviour
                 else if (hit.transform.GetComponent<OVRPlayerController>() != null && Random.value < 0.2)
                 {
                     soldiers.Remove(hit.transform);
-                    Destroy(hit.transform.gameObject);
+                    //Destroy(hit.transform.gameObject);
+                    hit.transform.GetComponentInChildren<OVRCameraRig>().leftEyeCamera.clearFlags = CameraClearFlags.SolidColor;
+                    hit.transform.GetComponentInChildren<OVRCameraRig>().leftEyeCamera.backgroundColor = Color.black;
+                    hit.transform.GetComponentInChildren<OVRCameraRig>().rightEyeCamera.clearFlags = CameraClearFlags.SolidColor;
+                    hit.transform.GetComponentInChildren<OVRCameraRig>().rightEyeCamera.backgroundColor = Color.black;
+                    hit.transform.position = Vector3.forward*10000;
+                    OVRPlayerController.move = Vector3.zero;
                 }
             }
             else
             {
                 Line.SetPosition(1, hit.point);
+                HitPool.instance.Poll(hit.point);
                 misses++;
                 if (misses == 4) target = null;
             }
